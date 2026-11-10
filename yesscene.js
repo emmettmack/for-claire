@@ -22,6 +22,6 @@
       if (window.Snd) Snd.bingbong();
     });
 
-    var s = document.createElement('script'); s.src = 'confetti.js'; document.body.appendChild(s);
+    var s = document.createElement('script'); s.src = 'confetti.js?v=20261110c'; document.body.appendChild(s);
   };
 })();
