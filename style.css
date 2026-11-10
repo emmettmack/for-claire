@@ -113,3 +113,11 @@ body.oops{background:#141018;color:#fff}
 .again-letter{margin:-6px 0 12px;font-size:14px;font-style:italic}
 .retry .again{display:block;animation:fadein 1.6s ease both}
 @keyframes fadein{from{opacity:0}to{opacity:.5}}
+
+.btns.stack{flex-direction:column;align-items:stretch;gap:12px;max-width:300px;margin:6px auto 0}
+.btns.stack .btn{font-size:20px;padding:14px 22px}
+
+/* little "turn your volume up" nudge */
+.vol-hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:55;display:flex;align-items:center;gap:9px;
+  padding:9px 16px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--hot);font-weight:700;font-size:15px;
+  box-shadow:0 4px 14px rgba(120,60,160,.22);animation:pulse 1.6s ease-in-out infinite;white-space:nowrap}

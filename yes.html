@@ -10,21 +10,13 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="party">
-<canvas id="confetti"></canvas>
-<main class="stage">
-  <div class="yay">
-    <h1>YAYYYY!!!</h1>
-    <h2>Claire said YES!</h2>
-    <p>You're officially my girlfriend</p>
-    <button class="btn more" id="more">More confetti!</button>
-  </div>
-</main>
+<main class="stage"></main>
 <script src="audio.js"></script>
 <script src="common.js"></script>
-<script src="confetti.js"></script>
+<script src="yesscene.js"></script>
 <script>
-  document.getElementById('more').addEventListener('click', function () { window.celebrate(); Snd.bingbong(); });
-  // The bing bong keeps repeating on this page (it replaces the background lullaby).
+  // Direct visit or refresh: the bing bong keeps repeating (a phone may ask for one tap first).
+  showYes();
   Snd.bingbongLoop();
 </script>
 </body>

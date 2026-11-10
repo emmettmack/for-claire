@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="void.css">
+</head>
+<body class="gdpage">
+<div class="gd" id="gd">
+  <div class="gd-bg" id="bg"></div>
+  <div class="gd-ground" id="ground"></div>
+
+  <div class="hole" id="hole"><div class="swirl"></div></div>
+
+  <div class="cube" id="cube">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs>
+        <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6df0ff"/><stop offset="1" stop-color="#1e8cff"/></linearGradient>
+      </defs>
+      <rect x="4" y="4" width="92" height="92" rx="10" fill="url(#cg)" stroke="#0b0d4a" stroke-width="7"/>
+      <rect x="22" y="22" width="56" height="56" rx="6" fill="#ff5c9e" stroke="#0b0d4a" stroke-width="5"/>
+      <rect x="33" y="38" width="12" height="14" rx="2" fill="#0b0d4a"/>
+      <rect x="55" y="38" width="12" height="14" rx="2" fill="#0b0d4a"/>
+      <rect x="36" y="60" width="28" height="6" rx="3" fill="#0b0d4a"/>
+    </svg>
+  </div>
+
+  <div class="sparks" id="sparks"></div>
+  <div class="letters" id="letters" aria-label="GFYS">
+    <span>G</span><span>F</span><span>Y</span><span>S</span>
+  </div>
+
+  <div class="flash" id="flash"></div>
+  <div class="scan" id="scan"></div>
+  <div class="rew" id="rew"><i></i><i></i> REWIND</div>
+</div>
+
+<script src="audio.js"></script>
+<script src="void.js"></script>
+</body>
+</html>

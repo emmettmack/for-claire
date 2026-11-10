@@ -4,6 +4,7 @@
   var KEY = 'claire.muted';
   var muted = false;
   try { muted = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  var SYNTH = 0.28;   // everything synthesized stays quiet so the real clip hits much harder
   var ctx = null, master = null, timer = null, nextTime = 0, step = 0, eighth = 0.28;
 
   function ensure() {
@@ -12,7 +13,7 @@
       if (!AC) return null;
       ctx = new AC();
       master = ctx.createGain();
-      master.gain.value = muted ? 0 : 0.9;
+      master.gain.value = muted ? 0 : SYNTH;
       master.connect(ctx.destination);
     }
     return ctx;
@@ -78,17 +79,13 @@
     src.connect(f); f.connect(g); g.connect(master); src.start(t);
   }
 
-  // If a real clip named bingbong.mp3 (or .m4a/.wav/.ogg) sits next to index.html, use it.
+  // The real clip, created right away so it can start inside the tap that says yes.
   var clip = null;
-  (function findClip() {
-    var names = ['bingbong.mp3', 'bingbong.m4a', 'bingbong.wav', 'bingbong.ogg'];
-    (function next(i) {
-      if (i >= names.length || !window.fetch) return;
-      fetch(names[i], { method: 'HEAD' }).then(function (r) {
-        if (r.ok) { clip = new Audio(names[i]); clip.preload = 'auto'; clip.muted = muted; clip.volume = 1; } else next(i + 1);
-      }).catch(function () { next(i + 1); });
-    })(0);
-  })();
+  try {
+    clip = new Audio('bingbong.m4a');
+    clip.preload = 'auto'; clip.volume = 1; clip.muted = muted;
+    clip.addEventListener('error', function () { clip = null; });
+  } catch (e) { clip = null; }
 
   var loopWanted = false, loopTimer = null;
   // Silence the bing bong completely (used when she leaves the confetti page or hides the tab).
@@ -106,8 +103,9 @@
   var api = {
     resume: resume,
     stopBingbong: stopBingbong,
+    stopMusic: function () { if (timer) { clearInterval(timer); timer = null; } },
     music: music,
-    whenReady: function (fn) {
+    whenReady: function (fn, quiet) {
       resume();
       if (running()) { fn(); return; }
       var done = false;
@@ -120,7 +118,7 @@
       }
       window.addEventListener('pointerdown', go, true);
       setTimeout(function () {
-        if (!running() && !muted && !document.querySelector('.sound-hint')) {
+        if (!quiet && !running() && !muted && !document.querySelector('.sound-hint')) {
           var h = document.createElement('div');
           h.className = 'sound-hint'; h.textContent = 'tap anywhere for sound';
           document.body.appendChild(h);
@@ -178,9 +176,7 @@
           document.body.appendChild(h);
         }
       }
-      // The clip is probed asynchronously; wait briefly for it to be found.
-      var tries = 0;
-      (function wait() { if (clip || tries++ > 12) start(); else setTimeout(wait, 100); })();
+      start();
     },
     pop: function () {   // envelope opens
       if (!running()) return; var t = ctx.currentTime + 0.02;
@@ -214,6 +210,35 @@
       note(196, 150, t + 1.5, 1.3);
     }
   };
+  // Sound effects for the void page.
+  function sweep(type, f0, f1, t, dur, vol, lpFrom, lpTo) {
+    var o = ctx.createOscillator(), g = ctx.createGain(), node = o;
+    o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    if (lpFrom) {
+      var lp = ctx.createBiquadFilter(); lp.type = 'lowpass';
+      lp.frequency.setValueAtTime(lpFrom, t); lp.frequency.exponentialRampToValueAtTime(lpTo, t + dur);
+      o.connect(lp); node = lp;
+    }
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(vol, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    node.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.05);
+  }
+  api.sfx = {
+    jump: function () { if (running()) sweep('square', 280, 900, ctx.currentTime + 0.01, 0.25, 0.07, 2400, 2400); },
+    suck: function () { if (running()) sweep('sawtooth', 900, 50, ctx.currentTime + 0.01, 0.7, 0.12, 2200, 120); },
+    boom: function () {
+      if (!running()) return; var t = ctx.currentTime + 0.01;
+      sweep('sine', 110, 28, t, 1.3, 0.7);
+      noiseBurst(t, 0.5, 220, 0.5);
+    },
+    reveal: function (i) { if (running()) bell([67, 71, 74, 79][i % 4], ctx.currentTime + 0.01, 1.2, 0.16); },
+    rewind: function () {
+      if (!running()) return; var t = ctx.currentTime + 0.01;
+      sweep('triangle', 200, 2600, t, 0.7, 0.11); sweep('triangle', 200, 2600, t + 0.75, 0.7, 0.11);
+      sweep('triangle', 200, 2600, t + 1.5, 0.7, 0.11);
+    }
+  };
+
   window.Snd = api;
 
   // Mute button on every page.
@@ -231,7 +256,7 @@
       e.stopPropagation();
       muted = !muted;
       try { localStorage.setItem(KEY, muted ? '1' : '0'); } catch (err) {}
-      ensure(); if (master) master.gain.value = muted ? 0 : 0.9;
+      ensure(); if (master) master.gain.value = muted ? 0 : SYNTH;
       if (clip) clip.muted = muted;
       if (!muted) resume();
       paint();
