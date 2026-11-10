@@ -63,6 +63,7 @@
   frame();
 
   window.celebrate = function () {
+    if (window.Snd) Snd.confettiPop();
     burst(W * 0.15, H * 0.9, 90, 1.5, 17);
     burst(W * 0.85, H * 0.9, 90, 1.5, 17);
     burst(W * 0.5, H * 0.6, 110, 2.6, 15);

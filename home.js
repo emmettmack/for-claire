@@ -6,6 +6,7 @@
   function openLetter() {
     if (env.classList.contains('open')) return;
     env.classList.add('open');
+    if (window.Snd) { Snd.resume(); Snd.music(false); Snd.pop(); }
     setTimeout(function () {
       wrap.style.display = 'none';
       letter.classList.add('show');
@@ -20,7 +21,8 @@
   var noCount = 0;
 
   document.getElementById('yes').addEventListener('click', function () {
-    window.location.href = 'yes.html';
+    if (window.Snd) Snd.yay();
+    setTimeout(function () { window.location.href = 'yes.html'; }, 450);
   });
 
   // "No" looks clickable but does nothing, until the third click.

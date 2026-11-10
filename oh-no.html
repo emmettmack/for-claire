@@ -16,7 +16,9 @@
   <div><div class="spinner"></div><p>Loading…</p></div>
 </div>
 
+<script src="audio.js"></script>
 <script>
+  Snd.whenReady(function () { Snd.sad(); });
   // 3 seconds of panic, then a spinning loading screen, then back to the question.
   setTimeout(function () {
     document.getElementById('loading').classList.add('show');

@@ -19,10 +19,12 @@
     <button class="btn more" id="more">More confetti!</button>
   </div>
 </main>
+<script src="audio.js"></script>
 <script src="common.js"></script>
 <script src="confetti.js"></script>
 <script>
   document.getElementById('more').addEventListener('click', function () { window.celebrate(); });
+  Snd.whenReady(function () { Snd.music(true); Snd.yay(); });
 </script>
 </body>
 </html>

@@ -99,3 +99,11 @@ body.oops{background:#141018;color:#fff}
   margin:0 auto 22px;animation:spin .9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading p{font-family:var(--script);font-size:30px;color:var(--hot);margin:0}
+
+/* sound */
+.mute-btn{position:fixed;top:12px;right:12px;z-index:60;width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;
+  display:grid;place-items:center;color:var(--hot);background:rgba(255,255,255,.85);box-shadow:0 4px 12px rgba(120,60,160,.2)}
+.oops .mute-btn{background:rgba(255,255,255,.15);color:#fff}
+.sound-hint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.92);color:var(--ink);
+  font-weight:700;font-size:15px;padding:9px 16px;border-radius:999px;box-shadow:0 4px 12px rgba(120,60,160,.2);animation:pulse 1.4s ease-in-out infinite}
+.oops .sound-hint{background:rgba(255,255,255,.18);color:#fff}
