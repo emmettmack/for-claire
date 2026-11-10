@@ -17,10 +17,24 @@ body{
 .stage{position:relative;width:100%;height:100%;display:grid;place-items:center;padding:16px}
 
 /* stuffed animals */
-.plush{position:fixed;pointer-events:none;user-select:none;line-height:1;
-  filter:drop-shadow(0 6px 6px rgba(120,60,120,.18));animation:bob 3.2s ease-in-out infinite}
+.plush{position:fixed;pointer-events:none;user-select:none;line-height:0;
+  filter:drop-shadow(0 6px 6px rgba(120,60,120,.18));animation:bob 3.4s ease-in-out infinite}
+.plush svg{width:100%;height:auto;overflow:visible}
+.plush .head{animation:tilt 4.6s ease-in-out infinite alternate}
+.plush .eyes{animation:blink 5.2s infinite}
+.plush .ear.wl{animation:earL 3.2s ease-in-out infinite alternate}
+.plush .ear.wr{animation:earR 3.2s ease-in-out infinite alternate}
+.plush .trunk{animation:trunk 3s ease-in-out infinite alternate}
+@keyframes tilt{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+@keyframes blink{0%,91%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}97%{transform:scaleY(1)}}
+@keyframes earL{from{transform:rotate(-5deg)}to{transform:rotate(4deg)}}
+@keyframes earR{from{transform:rotate(5deg)}to{transform:rotate(-4deg)}}
+@keyframes trunk{from{transform:rotate(-6deg)}to{transform:rotate(7deg)}}
+.party .plush{animation-duration:1.5s}
+.party .plush .head{animation-duration:1.6s}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-12px) rotate(calc(var(--r,0deg) + 4deg))}}
-.heart-float{position:fixed;bottom:-40px;pointer-events:none;animation:rise linear infinite;opacity:.8}
+.heart-float{position:fixed;bottom:-40px;pointer-events:none;animation:rise linear infinite;opacity:.8;line-height:0}
+.heart-float svg{width:100%;height:auto}
 @keyframes rise{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
 
 /* envelope */
@@ -37,7 +51,7 @@ body{
   clip-path:polygon(0 0,100% 0,50% 100%);background:#ff77a9}
 .env.open{animation:none}
 .env.open .flap{transform:rotateX(180deg);z-index:0}
-.seal{position:absolute;left:50%;top:50%;transform:translate(-50%,-30%);z-index:4;font-size:42px;transition:opacity .3s}
+.seal{position:absolute;left:50%;top:50%;transform:translate(-50%,-30%);z-index:4;width:46px;line-height:0;transition:opacity .3s}
 .env.open .seal{opacity:0}
 .hint{margin-top:22px;font-family:var(--script);font-size:26px;color:var(--hot);animation:pulse 1.4s ease-in-out infinite;text-shadow:0 2px 0 #fff}
 @keyframes pulse{50%{transform:scale(1.08)}}
