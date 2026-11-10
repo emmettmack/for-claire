@@ -78,6 +78,18 @@
     src.connect(f); f.connect(g); g.connect(master); src.start(t);
   }
 
+  // If a real clip named bingbong.mp3 (or .m4a/.wav/.ogg) sits next to index.html, use it.
+  var clip = null;
+  (function findClip() {
+    var names = ['bingbong.mp3', 'bingbong.m4a', 'bingbong.wav', 'bingbong.ogg'];
+    (function next(i) {
+      if (i >= names.length || !window.fetch) return;
+      fetch(names[i], { method: 'HEAD' }).then(function (r) {
+        if (r.ok) { clip = new Audio(names[i]); clip.preload = 'auto'; } else next(i + 1);
+      }).catch(function () { next(i + 1); });
+    })(0);
+  })();
+
   var api = {
     resume: resume,
     music: music,
@@ -100,6 +112,29 @@
           document.body.appendChild(h);
         }
       }, 500);
+    },
+    // The "BING BONG!" sound. Uses the real clip if present, otherwise a doorbell chime plus a spoken voice.
+    bingbong: function (done) {
+      if (muted) { if (done) setTimeout(done, 50); return; }
+      var fired = false;
+      function fin() { if (fired) return; fired = true; if (done) done(); }
+      if (clip) {
+        try { clip.currentTime = 0; var p = clip.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
+        clip.onended = fin; setTimeout(fin, 2600); return;
+      }
+      resume();
+      if (running()) {
+        var t = ctx.currentTime + 0.02;
+        bell(76, t, 1.3, 0.2); bell(72, t + 0.42, 1.8, 0.22);
+      }
+      try {
+        if ('speechSynthesis' in window) {
+          var u = new SpeechSynthesisUtterance('Bing bong!');
+          u.rate = 1.0; u.pitch = 1.4; u.volume = 1;
+          window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+        }
+      } catch (e) {}
+      setTimeout(fin, 1300);
     },
     pop: function () {   // envelope opens
       if (!running()) return; var t = ctx.currentTime + 0.02;

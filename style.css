@@ -107,3 +107,9 @@ body.oops{background:#141018;color:#fff}
 .sound-hint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.92);color:var(--ink);
   font-weight:700;font-size:15px;padding:9px 16px;border-radius:999px;box-shadow:0 4px 12px rgba(120,60,160,.2);animation:pulse 1.4s ease-in-out infinite}
 .oops .sound-hint{background:rgba(255,255,255,.18);color:#fff}
+
+/* subtle "try again" after a no */
+.again{display:none;font-size:15px;font-weight:600;letter-spacing:.5px;color:var(--ink);opacity:.5;margin-top:4px}
+.again-letter{margin:-6px 0 12px;font-size:14px;font-style:italic}
+.retry .again{display:block;animation:fadein 1.6s ease both}
+@keyframes fadein{from{opacity:0}to{opacity:.5}}

@@ -20,10 +20,20 @@
   // Fresh start every time she lands on the home page.
   var noCount = 0;
 
+  var going = false;
   document.getElementById('yes').addEventListener('click', function () {
-    if (window.Snd) Snd.yay();
-    setTimeout(function () { window.location.href = 'yes.html'; }, 450);
+    if (going) return; going = true;
+    function go() { window.location.href = 'yes.html'; }
+    if (window.Snd) { Snd.resume(); Snd.bingbong(go); } else go();
   });
+
+  // Coming back after a "no": a quiet nudge to try again.
+  try {
+    if (sessionStorage.getItem('claire.tryAgain') === '1') {
+      sessionStorage.removeItem('claire.tryAgain');
+      document.body.classList.add('retry');
+    }
+  } catch (e) {}
 
   // "No" looks clickable but does nothing, until the third click.
   document.getElementById('no').addEventListener('click', function () {

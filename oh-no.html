@@ -22,6 +22,7 @@
   // 3 seconds of panic, then a spinning loading screen, then back to the question.
   setTimeout(function () {
     document.getElementById('loading').classList.add('show');
+    try { sessionStorage.setItem('claire.tryAgain', '1'); } catch (e) {}
     setTimeout(function () { window.location.replace('index.html'); }, 2600);
   }, 3000);
 </script>
