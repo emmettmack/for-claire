@@ -90,8 +90,22 @@
     })(0);
   })();
 
+  var loopWanted = false, loopTimer = null;
+  // Silence the bing bong completely (used when she leaves the confetti page or hides the tab).
+  function stopBingbong() {
+    if (clip) { try { clip.pause(); clip.currentTime = 0; clip.loop = false; } catch (e) {} }
+    if (loopTimer) { clearInterval(loopTimer); loopTimer = null; }
+    try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch (e) {}
+  }
+  window.addEventListener('pagehide', function () { loopWanted = false; stopBingbong(); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { stopBingbong(); }
+    else if (loopWanted && clip) { clip.loop = true; var p = clip.play(); if (p && p.catch) p.catch(function () {}); }
+  });
+
   var api = {
     resume: resume,
+    stopBingbong: stopBingbong,
     music: music,
     whenReady: function (fn) {
       resume();
@@ -139,6 +153,7 @@
     // Keeps the bing bong repeating on the yes page. Retries on her first tap if the browser blocks autoplay.
     bingbongLoop: function () {
       var looping = false;
+      loopWanted = true;
       function start() {
         if (looping) return;
         if (clip) {
@@ -151,7 +166,7 @@
         } else {
           looping = true;
           api.bingbong();
-          setInterval(function () { api.bingbong(); }, 2200);
+          loopTimer = setInterval(function () { api.bingbong(); }, 2200);
         }
       }
       function needTap() {

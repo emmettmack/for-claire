@@ -23,8 +23,7 @@
   var going = false;
   document.getElementById('yes').addEventListener('click', function () {
     if (going) return; going = true;
-    function go() { window.location.href = 'yes.html'; }
-    if (window.Snd) { Snd.resume(); Snd.bingbong(go); } else go();
+    window.location.href = 'yes.html';
   });
 
   // Coming back after a "no": a quiet nudge to try again.
