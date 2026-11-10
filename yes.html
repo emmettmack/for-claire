@@ -24,7 +24,8 @@
 <script src="confetti.js"></script>
 <script>
   document.getElementById('more').addEventListener('click', function () { window.celebrate(); Snd.bingbong(); });
-  Snd.whenReady(function () { Snd.music(true); });
+  // The bing bong keeps repeating on this page (it replaces the background lullaby).
+  Snd.bingbongLoop();
 </script>
 </body>
 </html>

@@ -85,7 +85,7 @@
     (function next(i) {
       if (i >= names.length || !window.fetch) return;
       fetch(names[i], { method: 'HEAD' }).then(function (r) {
-        if (r.ok) { clip = new Audio(names[i]); clip.preload = 'auto'; } else next(i + 1);
+        if (r.ok) { clip = new Audio(names[i]); clip.preload = 'auto'; clip.muted = muted; clip.volume = 1; } else next(i + 1);
       }).catch(function () { next(i + 1); });
     })(0);
   })();
@@ -120,7 +120,7 @@
       function fin() { if (fired) return; fired = true; if (done) done(); }
       if (clip) {
         try { clip.currentTime = 0; var p = clip.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {}
-        clip.onended = fin; setTimeout(fin, 2600); return;
+        clip.onended = fin; setTimeout(fin, 1800); return;
       }
       resume();
       if (running()) {
@@ -135,6 +135,37 @@
         }
       } catch (e) {}
       setTimeout(fin, 1300);
+    },
+    // Keeps the bing bong repeating on the yes page. Retries on her first tap if the browser blocks autoplay.
+    bingbongLoop: function () {
+      var looping = false;
+      function start() {
+        if (looping) return;
+        if (clip) {
+          clip.loop = true; clip.muted = muted;
+          var p = clip.play();
+          if (p && p.then) {
+            p.then(function () { looping = true; var h = document.querySelector('.sound-hint'); if (h) h.remove(); })
+             .catch(function () { needTap(); });
+          } else { looping = true; }
+        } else {
+          looping = true;
+          api.bingbong();
+          setInterval(function () { api.bingbong(); }, 2200);
+        }
+      }
+      function needTap() {
+        function again() { window.removeEventListener('pointerdown', again, true); start(); }
+        window.addEventListener('pointerdown', again, true);
+        if (!muted && !document.querySelector('.sound-hint')) {
+          var h = document.createElement('div');
+          h.className = 'sound-hint'; h.textContent = 'tap anywhere for sound';
+          document.body.appendChild(h);
+        }
+      }
+      // The clip is probed asynchronously; wait briefly for it to be found.
+      var tries = 0;
+      (function wait() { if (clip || tries++ > 12) start(); else setTimeout(wait, 100); })();
     },
     pop: function () {   // envelope opens
       if (!running()) return; var t = ctx.currentTime + 0.02;
@@ -186,6 +217,7 @@
       muted = !muted;
       try { localStorage.setItem(KEY, muted ? '1' : '0'); } catch (err) {}
       ensure(); if (master) master.gain.value = muted ? 0 : 0.9;
+      if (clip) clip.muted = muted;
       if (!muted) resume();
       paint();
     });
